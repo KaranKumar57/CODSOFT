@@ -1,0 +1,147 @@
+#include <iostream>
+using namespace std;
+
+char Game_Board[3][3] = { {'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'} };
+int row;
+int column;
+char token = 'x';
+bool draw = false;
+string p1 = "";
+string p2 = "";
+
+void Display_Board()
+{
+    cout << " --------------------\n";
+    cout << "      |       |     \n";
+    cout << "  " << Game_Board[0][0] << "   |  " << Game_Board[0][1] << "    |   " << Game_Board[0][2] << "  \n";
+    cout << " --------------------\n";
+    cout << "      |       |     \n";
+    cout << "  " << Game_Board[1][0] << "   |  " << Game_Board[1][1] << "    |   " << Game_Board[1][2] << "  \n";
+    cout << " --------------------\n";
+    cout << "      |       |     \n";
+    cout << "  " << Game_Board[2][0] << "   |  " << Game_Board[2][1] << "    |   " << Game_Board[2][2] << "  \n";
+    cout << " --------------------\n";
+}
+
+void Play()
+{
+    int digit;
+
+    if (token == 'x')
+    {
+        cout << p1 << ", please enter a number = ";
+    }
+    else if (token == '0')
+    {
+        cout << p2 << ", please enter a number = ";
+    }
+
+    bool validMove = false; // Track if the entered move is valid
+
+    while (!validMove)
+    {
+        cin >> digit;
+
+        // Check for valid input
+        if (digit < 1 || digit > 9)
+        {
+            cout << "Invalid input! Please enter a valid number between 1 and 9." << endl;
+        }
+        else
+        {
+            row = (digit - 1) / 3;
+            column = (digit - 1) % 3;
+
+            if (Game_Board[row][column] == 'x' || Game_Board[row][column] == '0')
+            {
+                cout << "Cell already occupied! Please choose an empty cell." << endl;
+            }
+            else
+            {
+                validMove = true;
+            }
+        }
+    }
+
+    Game_Board[row][column] = token;
+
+    if (token == 'x')
+    {
+        token = '0';
+    }
+    else
+    {
+        token = 'x';
+    }
+}
+
+bool game()
+{
+    // Check rows and columns for a win
+    for (int i = 0; i < 3; i++)
+    {
+        if ((Game_Board[i][0] == Game_Board[i][1] && Game_Board[i][0] == Game_Board[i][2]) ||
+            (Game_Board[0][i] == Game_Board[1][i] && Game_Board[0][i] == Game_Board[2][i]))
+        {
+            return true;
+        }
+    }
+
+    // Check diagonals for a win
+    if ((Game_Board[0][0] == Game_Board[1][1] && Game_Board[1][1] == Game_Board[2][2]) ||
+        (Game_Board[0][2] == Game_Board[1][1] && Game_Board[1][1] == Game_Board[2][0]))
+    {
+        return true;
+    }
+
+    // Check for a tie
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (Game_Board[i][j] != 'x' && Game_Board[i][j] != '0')
+            {
+                return false; // Game is still ongoing
+            }
+        }
+    }
+
+    draw = true;
+    return true;
+}
+
+int main()
+{
+    cout << "Enter the name of first player = ";
+    cin >> p1;
+    cout << "\nEnter the name of second player = ";
+    cin >> p2;
+
+    cout << endl;
+
+    cout << p1 << " is the player 1 (x) to play first\n" << endl;
+    cout << p2 << " is the player 2 (0) to play second\n" << endl;
+
+    while (!game())
+    {
+        Display_Board();
+        Play();
+    }
+
+    Display_Board();
+
+    if (draw)
+    {
+        cout << "It's a tie!" << endl;
+    }
+    else if (token == 'x')
+    {
+        cout << p2 << " Wins!" << endl;
+    }
+    else
+    {
+        cout << p1 << " Wins!" << endl;
+    }
+
+    return 0;
+}
